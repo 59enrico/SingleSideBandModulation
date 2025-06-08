@@ -1,14 +1,18 @@
 %% Leue, Enrico - MT/189104 - 05.06.2025
 % --------------------------------------
 % Digital Signalprocessing SS2025 - Project: Single Sideband (SSB) modulation
-% This Script modulates a given audiosignal using the Hilbert transform and the phasemethod to get the upper Sigle Sideband (SSB) modulation of the signal. 
+%
+% This script modulates a given audiosignal using the Hilbert transform and the phasemethod to get the upper Sigle Sideband (SSB) modulation of the signal. 
 % To view and hear the effects of the SSB modulation, the spectra of both signals (original and modulated) are plotted and a short excerpt from both
 % is played via speaker.
 
 clear, close, clc
 
 %% Input audiosignal
-[x, Fs] = audioread('/Users/enrico/Documents/hochschule_offenburg/MT8/Digitale_Signalverarbeitung/Kap2/LEnfantSauvage-96k.ogg');
+% A) use matlab example file:
+load handel.mat; x = y;
+% B) use own file:
+% [x, Fs] = audioread('...');
 N = length(x);                              % [#] number of samples in the original audiofile
 t = (0:N-1)/Fs;                             % [s] time vector of the original samples
 
@@ -51,9 +55,9 @@ legend();
 
 
 %% Speaker playback
-t0 = 37;                                    % [s] start of playback (i.e. 37 s)
+t0 = 0;                                     % [s] start of playback (i.e. 37 s)
 dur = 8;                                    % [s] duration of playback (i.e. 8 s)
-playtime = t0*Fs:(t0+dur)*Fs;               % calculate the samples to be played back
+playtime = t0*Fs+1:(t0+dur)*Fs;             % calculate the samples to be played back
 soundsc(x(playtime), Fs);                   % playback the original signal via speaker
-pause(dur+1);
+pause(dur+1);                               % pause between playbacks
 soundsc(ssb_signal(playtime), Fs);          % playback the ssb signal via speaker
