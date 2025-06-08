@@ -1,57 +1,59 @@
 %% Leue, Enrico - MT/189104 - 05.06.2025
 % --------------------------------------
-% Digitale Signalverarbeitung SS2025 - Projektarbeit Einseitenbandmodulation (ESB):
-% Mittels Hilbert-Transformation und Phasenmethode wird eine Audiodatei um eine gewünschte Modulationsfrequnz nach oben verschoben
+% Digital Signalprocessing SS2025 - Project: Single Sideband (SSB) modulation
+% This Script modulates a given audiosignal using the Hilbert transform and the phasemethod to get the upper Sigle Sideband (SSB) modulation of the signal. 
+% To view and hear the effects of the SSB modulation, the spectra of both signals (original and modulated) are plotted and a short excerpt from both
+% is played via speaker.
 
 clear, close, clc
 
-%% Audiodatei
+%% Input audiosignal
 [x, Fs] = audioread('/Users/enrico/Documents/hochschule_offenburg/MT8/Digitale_Signalverarbeitung/Kap2/LEnfantSauvage-96k.ogg');
-N = length(x);          % [#] Anzahl der Samples der originalen Audioadatei
-t = (0:N-1)/Fs;         % [s] Zeitvektor
+N = length(x);                              % [#] number of samples in the original audiofile
+t = (0:N-1)/Fs;                             % [s] time vector of the original samples
 
-%% Modulationsfrequenz
-Fc = 200;               % [Hz] Frequenzverschiebung nach oben (< 1 kHz)
+%% Modulation and carrier
+Fc = 200;                                   % [Hz] frequency by which the signal is modulated up
+modulator = exp(1j*2*pi*Fc*t');             % complex sine function (carrrier)
 
-%% Hilbert-Transformation
-x_hilbert = hilbert(x); % analytische Signalform
+%% Hilbert transform
+x_hilbert = hilbert(x);                     % analytic signal form to isolate positive frequencies of signal
 
-%% Einseitenbandmodulation
-ssb_signal = real(x_hilbert .* exp(1j*2*pi*Fc*t')); 
+%% Single Sideband modulation
+ssb_signal = real(x_hilbert .* modulator);  % modulation by multiplication of signal with carrier
 
-%% Spektren berechnen
-X_fft = abs(fft(x, N));
-SSB_fft = abs(fft(ssb_signal, N));
-f = linspace(0, Fs/2, floor(N/2)+1);
+%% Calculate spectra
+X_fft = abs(fft(x, N));                     % fast fourier transform to get spectra of original signal ...
+SSB_fft = abs(fft(ssb_signal, N));          % ... and SSB modulated signal
+f = linspace(0, Fs/2, floor(N/2)+1);        % frequency vector from 0 to Nyquist-frequency of signal
 
-%% Spektren visualisieren
+%% Plot spectra and visualize shift
 figure;
 subplot(2,1,1);
-plot(f/1e3, X_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", 'Original Signal');
+plot(f/1e3, X_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", 'Original signal');
 hold on
-plot(f/1e3, SSB_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", 'SSB Signal');
-title("Spektren der Signale, Verschiebung um: "+ num2str(Fc)+ " Hz.");
-xlabel('Frequenz [kHz]');
+plot(f/1e3, SSB_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", 'SSB signal');
+title("Spectra of the signals, shifted up by: "+ num2str(Fc)+ " Hz.");
+xlabel('Frequency [kHz]');
 ylabel('Amplitude');
-xlim([0 1]);
+xlim([0 1]);                                % focus on the frequency shift in the lower frequencies
 legend();
 
 subplot(2,1,2);
-plot(f/1e3, 20*log10(X_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", 'Original Signal');
+plot(f/1e3, 20*log10(X_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", 'Original signal');
 hold on
-plot(f/1e3, 20*log10(SSB_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", 'SSB Signal');
-title("Spektren der Signale in dB, Verschiebung um: "+ num2str(Fc)+ " Hz.");
-xlabel('Frequenz [kHz]');
+plot(f/1e3, 20*log10(SSB_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", 'SSB signal');
+title("Spectra of the signals in dB, shifted up by: "+ num2str(Fc)+ " Hz.");
+xlabel('Frequency [kHz]');
 ylabel('Amplitude [dB]');
-xlim([0 1]);
+xlim([0 1]);                                % focus on the frequency shift in the lower frequencies
 legend();
 
 
-%% Lautsprecherwiedergabe des modifizierten Signals
-t0 = 37;                            % [s] Startpunkt der Wiedergabe (bspw. 37)
-dur = 8;                            % [s] Dauer der Wiedergabe (bspw. 8)
-playtime = t0*Fs:(t0+dur)*Fs;       % Berechnung der zu wiedergebenden Samples
-sound(x(playtime), Fs);             % Wiedergabe Ausschnitt Original Signal
+%% Speaker playback
+t0 = 37;                                    % [s] start of playback (i.e. 37 s)
+dur = 8;                                    % [s] duration of playback (i.e. 8 s)
+playtime = t0*Fs:(t0+dur)*Fs;               % calculate the samples to be played back
+soundsc(x(playtime), Fs);                   % playback the original signal via speaker
 pause(dur+1);
-sound(ssb_signal(playtime), Fs);    % Wiedergabe Ausschnitt ESB Signal
-
+soundsc(ssb_signal(playtime), Fs);          % playback the ssb signal via speaker
