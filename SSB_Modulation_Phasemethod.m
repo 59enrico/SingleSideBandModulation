@@ -30,7 +30,7 @@ subplot(2,1,1);
 plot(f/1e3, X_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", 'Original Signal');
 hold on
 plot(f/1e3, SSB_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", 'SSB Signal');
-title('Spektren der Signale');
+title("Spektren der Signale, Verschiebung um: "+ num2str(Fc)+ " Hz.");
 xlabel('Frequenz [kHz]');
 ylabel('Amplitude');
 xlim([0 1]);
@@ -40,7 +40,7 @@ subplot(2,1,2);
 plot(f/1e3, 20*log10(X_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", 'Original Signal');
 hold on
 plot(f/1e3, 20*log10(SSB_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", 'SSB Signal');
-title('Spektren der Signale in dB');
+title("Spektren der Signale in dB, Verschiebung um: "+ num2str(Fc)+ " Hz.");
 xlabel('Frequenz [kHz]');
 ylabel('Amplitude [dB]');
 xlim([0 1]);
