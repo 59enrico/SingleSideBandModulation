@@ -2,15 +2,14 @@
 % --------------------------------------
 % Digital Signalprocessing SS2025 - Project: Single Sideband (SSB) modulation
 %
-% This script modulates a given audiosignal using the Hilbert transform and the phasemethod to get the upper Sigle Sideband (SSB) modulation of the signal. 
-% To view and hear the effects of the SSB modulation, the spectra of both signals (original and modulated) are plotted and a short excerpt from both
-% is played via speaker.
+% This script modulates an audiosignal using the Hilbert transform and the phasemethod to get the upper Sigle Sideband (SSB) modulation of the signal. 
+% To view and hear the effects of the SSB modulation, the spectra of both signals (original and modulated) are plotted and a short excerpt from both is played via speaker.
 
 clear, close, clc
 
 %% Input audiosignal
 % A) use matlab example file:
-load handel.mat;
+load handel.mat;                            % examples: chirp.mat (1.6 s), gong.mat (5.1 s), handel.mat (8.9 s), laughter.mat (6.4 s)
 % B) use own file:
 % [y, Fs] = audioread('...');
 N = length(y);                              % [#] number of samples in the original audiofile
@@ -18,7 +17,7 @@ t = (0:N-1)/Fs;                             % [s] time vector of the original sa
 
 %% Modulation and carrier
 Fc = 200;                                   % [Hz] frequency by which the signal is modulated up
-modulator = exp(1j*2*pi*Fc*t');             % complex sine function (carrrier)
+modulator = exp(1j*2*pi*Fc*t');             % complex sine function (carrier)
 
 %% Hilbert transform
 x_hilbert = hilbert(y);                     % analytic signal form to isolate positive frequencies of signal
@@ -56,7 +55,7 @@ legend();
 
 %% Speaker playback
 t0 = 0;                                     % [s] start of playback (i.e. 37 s)
-dur = 8;                                    % [s] duration of playback (i.e. 8 s)
+dur = 5;                                    % [s] duration of playback (i.e. 8 s)
 playtime = t0*Fs+1:(t0+dur)*Fs;             % calculate the samples to be played back
 soundsc(y(playtime), Fs);                   % playback the original signal via speaker
 pause(dur+1);                               % pause between playbacks
