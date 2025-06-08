@@ -22,6 +22,9 @@ t = (0:N-1)/Fs;                             % [s] time vector of the original sa
 Fc = 200;                                   % [Hz] frequency by which the signal is modulated up
 modulator = exp(1j*2*pi*Fc*t');             % complex sine function (carrier)
 
+%% Windowing
+y = y .* hann(N);                           % reduce spectral leakage and prevent discontinuities (i.e. in block bounderies of real time audio)
+
 %% Hilbert transform
 x_hilbert = hilbert(y);                     % analytic signal form to isolate positive frequencies of signal
 
