@@ -1,13 +1,16 @@
 %% Leue, Enrico - MT/189104 - 05.06.2025
 % --------------------------------------
-% Digital Signalprocessing SS2025 - Project: Single Sideband (SSB) modulation
-%
-% This script modulates an audiosignal using the Hilbert transform and the phasemethod to get the upper Sigle Sideband (SSB) modulation of the signal. 
-% To view and hear the effects of the SSB modulation, the spectra of both signals (original and modulated) are plotted and a short excerpt from both is played via speaker.
+% University of Applied Sciences Offenburg - Digital Signal Processing SS2025 - Project: Single Sideband (SSB) modulation
+% --------------------------------------
+% This project implements single sideband (SSB) modulation of an audio signal using the Hilbert transform and the phase method.
+% The goal is to shift a given audio signal in frequency so that only the upper sideband remains.
+% The script loads an audio signal, computes its analytic signal using the Hilbert transform, and modulates it with a carrier signal.
+% The spectra of both the original and the SSB-modulated signals are then calculated and plotted to visualize the frequency shift.
+% To demonstrate the effect of modulation, both signals can also be played back via speakers for direct comparison.
 
 clear, close, clc
 
-%% Input audiosignal
+%% Input audio signal
 % A) use matlab example file:
 load handel.mat;                            % examples: chirp.mat (1.6 s), gong.mat (5.1 s), handel.mat (8.9 s), laughter.mat (6.4 s)
 % B) use own file:
