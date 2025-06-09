@@ -1,4 +1,4 @@
-# Single Sideband (SSB) modulation unsing Hilbert transform and phase method
+# Single Sideband (SSB) modulation using Hilbert transform and phase method
 
 Digital Signal Processing SS2025 - University of Applied Sciences Offenburg
 
