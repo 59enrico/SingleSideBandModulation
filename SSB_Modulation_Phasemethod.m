@@ -11,15 +11,14 @@
 clear, close, clc                           % Clear workspace, close figures, clear command window.
 
 %% Input audio signal
-% A) using MATLAB example file:
-load chirp.mat;                            % MATLAB examples: chirp.mat (1.6 s), gong.mat (5.1 s), handel.mat (8.9 s), laughter.mat (6.4 s).
-% B) using own file:
-% [y, Fs] = audioread('C:\myFolder\myFile.sample_audio.wav');
+% Use a default MATLAB audio example file or delete the comment "%" on the line below and add custom file path
+load train.mat;                             % MATLAB audio examples: chirp, gong, handel, laughter, splat, train.
+% [y, Fs] = audioread("C:\myFolder\myCustomAudioFile.wav");
 N = length(y);                              % Number of samples in the original file.
 t = (0:N-1)/Fs;                             % [s] time vector corresponding to the original samples.
 
 %% Modulation and carrier
-Fc = 200;                                   % [Hz] Carrier frequency for modulation, equals frequency shift.
+Fc = 500;                                   % [Hz] Carrier frequency for modulation, equals frequency shift.
 modulator = exp(1j*2*pi*Fc*t');             % Generate the complex exponential function (carrier) used for frequency translation of the input signal.
 
 %% Windowing
@@ -29,33 +28,31 @@ y = y .* hann(N);                           % Windowing the signal reduces spect
 y_hilbert = hilbert(y);                     % Compute the analytic signal form to isolate positive frequency components of signal, required for SSB modulation.
 
 %% Single Sideband modulation
-ssb_signal = real(y_hilbert .* modulator);  % Upper SSB modulated signal is real part of the multiplication of the analytic signal with the complex carrier.
+ssb = real(y_hilbert .* modulator);  % Upper SSB modulated signal is real part of the multiplication of the analytic signal with the complex carrier.
 
 %% Calculate spectra
 Y_fft = abs(fft(y, N));                     % Compute magnitude spectra of the original ...
-SSB_fft = abs(fft(ssb_signal, N));          % ... and the SSB modulated signal for visualization.
+SSB_fft = abs(fft(ssb, N));                 % ... and the SSB modulated signal for visualization.
 f = linspace(0, Fs/2, floor(N/2)+1);        % Corresponding frequency vector up to Nyquist frequency.
 
 %% Plot spectra and visualize shift
 figure;
 subplot(2,1,1);
-plot(f/1e3, Y_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", 'Original signal');
+plot(f/1e3, Y_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", "Original signal");
 hold on
-plot(f/1e3, SSB_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", 'SSB signal');
+plot(f/1e3, SSB_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", "SSB signal");
 title("Spectra of the signals, shifted up by: "+ num2str(Fc)+ " Hz.");
-xlabel('Frequency [kHz]');
-ylabel('Amplitude');
-xlim([0 1]);                                % Limited X-Axis to emphasize the frequency shift
+xlabel("Frequency [kHz]");
+ylabel("Amplitude");
 legend();
 
 subplot(2,1,2);
-plot(f/1e3, 20*log10(Y_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", 'Original signal');
+plot(f/1e3, 20*log10(Y_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", "Original signal");
 hold on
-plot(f/1e3, 20*log10(SSB_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", 'SSB signal');
+plot(f/1e3, 20*log10(SSB_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", "SSB signal");
 title("Spectra of the signals in dB, shifted up by: "+ num2str(Fc)+ " Hz.");
-xlabel('Frequency [kHz]');
-ylabel('Amplitude [dB]');
-xlim([0 1]);                                % Limited X-Axis to emphasize the frequency shift
+xlabel("Frequency [kHz]");
+ylabel("Amplitude [dB]");
 legend();
 
 
@@ -66,4 +63,4 @@ dur = min(dur, N/Fs);                       % Set maximum playback duration to s
 playtime = t0*Fs+1:(t0+dur)*Fs;             % Calculate the samples to be played back.
 soundsc(y(playtime), Fs);                   % Playback the original signal.
 pause(dur+1);                               % Pause between playbacks.
-soundsc(ssb_signal(playtime), Fs);          % Playback the ssb signal.
+soundsc(ssb(playtime), Fs);                 % Playback the ssb signal.
