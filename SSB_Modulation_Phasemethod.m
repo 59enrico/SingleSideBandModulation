@@ -24,7 +24,7 @@ Fc = 500;
 % Generate the complex exponential function (carrier) used for frequency translation of the input signal.
 modulator = exp(1j*2*pi*Fc*t');
 
-% Windowing the signal reduces spectral leakage and prevents discontinuities (i.e. in bounderies of buffered real-time data).
+% Windowing the signal reduces spectral leakage and prevents discontinuities (i.e. in processing real-time data).
 y = y .* hann(N);
 
 % Hilbert transform the signal to compute the analytic signal form to isolate positive frequency components, which are required for SSB modulation.
