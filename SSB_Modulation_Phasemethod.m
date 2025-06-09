@@ -1,4 +1,4 @@
-%% Leue, Enrico - MT/189104 - 09.06.2025
+% Leue, Enrico - MT/189104 - 09.06.2025
 % --------------------------------------
 % University of Applied Sciences Offenburg - Digital Signal Processing SS2025 - Single Sideband (SSB) modulation
 % --------------------------------------
@@ -8,34 +8,38 @@
 % The spectra of both signals (original and modulated) are calculated and plotted to visualize the frequency shift.
 % To demonstrate the effect of the modulation, both signals are also played back sequentially via speakers for comparison.
 
-clear, close, clc                           % Clear workspace, close figures, clear command window.
+% Clear workspace, close figures, clear command window.
+clear, close, clc
 
-%% Input audio signal
-% Use a default MATLAB audio example file or delete the comment "%" on the line below and add custom file path
-load train.mat;                             % MATLAB audio examples: chirp, gong, handel, laughter, splat, train.
+% Input audio signal, use a default MATLAB audio example file or delete the comment "%" on the line below and add custom file path
+load train.mat;
 % [y, Fs] = audioread("C:\myFolder\myCustomAudioFile.wav");
-N = length(y);                              % Number of samples in the original file.
-t = (0:N-1)/Fs;                             % [s] time vector corresponding to the original samples.
+% Number of samples in the original file.
+N = length(y);
+% Time vector corresponding to the original samples.
+t = (0:N-1)/Fs;                             % [s]
 
-%% Modulation and carrier
-Fc = 500;                                   % [Hz] Carrier frequency for modulation, equals frequency shift.
-modulator = exp(1j*2*pi*Fc*t');             % Generate the complex exponential function (carrier) used for frequency translation of the input signal.
+% Carrier frequency representing the variable frequency shift.
+Fc = 500;                                   % [Hz]
+% Generate the complex exponential function (carrier) used for frequency translation of the input signal.
+modulator = exp(1j*2*pi*Fc*t');
 
-%% Windowing
-y = y .* hann(N);                           % Windowing the signal reduces spectral leakage and prevents discontinuities (i.e. in bounderies of buffered real-time data).
+% Windowing the signal reduces spectral leakage and prevents discontinuities (i.e. in bounderies of buffered real-time data).
+y = y .* hann(N);
 
-%% Hilbert transform
-y_hilbert = hilbert(y);                     % Compute the analytic signal form to isolate positive frequency components of signal, required for SSB modulation.
+% Hilbert transform the signal to compute the analytic signal form to isolate positive frequency components, which are required for SSB modulation.
+y_hilbert = hilbert(y);
 
-%% Single Sideband modulation
-ssb = real(y_hilbert .* modulator);  % Upper SSB modulated signal is real part of the multiplication of the analytic signal with the complex carrier.
+% Upper Single Sideband modulation is the real part of the multiplication of the analytic signal with the complex carrier.
+ssb = real(y_hilbert .* modulator);
 
-%% Calculate spectra
-Y_fft = abs(fft(y, N));                     % Compute magnitude spectra of the original ...
-SSB_fft = abs(fft(ssb, N));                 % ... and the SSB modulated signal for visualization.
-f = linspace(0, Fs/2, floor(N/2)+1);        % Corresponding frequency vector up to Nyquist frequency.
+% Compute magnitude spectra of the original and the SSB modulated signal for visualization.
+Y_fft = abs(fft(y, N));
+SSB_fft = abs(fft(ssb, N));
+% Corresponding frequency vector up to Nyquist frequency.
+f = linspace(0, Fs/2, floor(N/2)+1);
 
-%% Plot spectra and visualize shift
+% Plot both spectra to visualize modulation and frequency shift.
 figure;
 subplot(2,1,1);
 plot(f/1e3, Y_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", "Original signal");
@@ -55,12 +59,18 @@ xlabel("Frequency [kHz]");
 ylabel("Amplitude [dB]");
 legend();
 
-
-%% Speaker playback
-t0 = 0;                                     % [s] Start of playback (changeable for custom files, for examples use 0).
-dur = 5;                                    % [s] Duration of playback.
-dur = min(dur, N/Fs);                       % Set maximum playback duration to signal length.
-playtime = t0*Fs+1:(t0+dur)*Fs;             % Calculate the samples to be played back.
-soundsc(y(playtime), Fs);                   % Playback the original signal.
-pause(dur+1);                               % Pause between playbacks.
-soundsc(ssb(playtime), Fs);                 % Playback the ssb signal.
+% Speaker playback to hear the frequency shift between the original audio signal to the SSB modulated signal
+% Start of playback (default and examples: 0).
+t0 = 0;                                     % [s]
+% Duration of playback.
+dur = 5;                                    % [s]
+% Set maximum playback duration to signal length.
+dur = min(dur, N/Fs);                       
+% Calculate the samples to be played back.
+playtime = t0*Fs+1:(t0+dur)*Fs;             
+% Playback the original signal.
+soundsc(y(playtime), Fs);                   
+% Pause between playbacks.
+pause(dur+1);
+% Playback the ssb signal.
+soundsc(ssb(playtime), Fs);
