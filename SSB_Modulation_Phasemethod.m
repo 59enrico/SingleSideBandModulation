@@ -16,11 +16,11 @@ load train.mat;
 % [y, Fs] = audioread("C:\myFolder\myCustomAudioFile.wav");
 % Number of samples in the original file.
 N = length(y);
-% Time vector corresponding to the original samples.
-t = (0:N-1)/Fs;                             % [s]
+% Time vector corresponding to the original samples in seconds.
+t = (0:N-1)/Fs;
 
-% Carrier frequency representing the variable frequency shift.
-Fc = 500;                                   % [Hz]
+% Carrier frequency representing the variable frequency shift in Hertz.
+Fc = 500;
 % Generate the complex exponential function (carrier) used for frequency translation of the input signal.
 modulator = exp(1j*2*pi*Fc*t');
 
@@ -60,10 +60,10 @@ ylabel("Amplitude [dB]");
 legend();
 
 % Speaker playback to hear the frequency shift between the original audio signal to the SSB modulated signal
-% Start of playback (default and examples: 0).
-t0 = 0;                                     % [s]
-% Duration of playback.
-dur = 5;                                    % [s]
+% Start of playback in seconds (default and examples: 0).
+t0 = 0;
+% Duration of playback in seconds.
+dur = 5;
 % Set maximum playback duration to signal length.
 dur = min(dur, N/Fs);                       
 % Calculate the samples to be played back.
