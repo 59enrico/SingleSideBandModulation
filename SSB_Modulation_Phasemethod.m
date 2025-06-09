@@ -48,6 +48,7 @@ plot(f/1e3, SSB_fft(1:floor(N/2)+1), "LineWidth", 2, "DisplayName", "SSB signal"
 title("Spectra of the signals, shifted up by: "+ num2str(Fc)+ " Hz.");
 xlabel("Frequency [kHz]");
 ylabel("Amplitude");
+xlim([0 3.4]);
 legend();
 
 subplot(2,1,2);
@@ -57,7 +58,8 @@ plot(f/1e3, 20*log10(SSB_fft(1:floor(N/2)+1)), "LineWidth", 2, "DisplayName", "S
 title("Spectra of the signals in dB, shifted up by: "+ num2str(Fc)+ " Hz.");
 xlabel("Frequency [kHz]");
 ylabel("Amplitude [dB]");
-legend();
+xlim([0 3.4])
+legend("Location", "southeast");
 
 % Speaker playback to hear the frequency shift between the original audio signal to the SSB modulated signal
 % Start of playback in seconds (default and examples: 0).
